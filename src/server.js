@@ -1,6 +1,10 @@
 const { Gpio } = require("pigpio");
 const express = require("express");
+const cors = require("cors");
+
 var app = express();
+app.use(cors()); // enables all cors requests
+app.use(express.json());
 
 // TODO: get all lights (loaded from config)
 const leds = [
@@ -9,8 +13,6 @@ const leds = [
 ]
 
 leds.forEach(l => l.pwmWrite(0)); // start pwm on all lights
-
-app.use(express.json());
 
 // get light state by light id
 app.get('/lights/:id', function(req, res) {
