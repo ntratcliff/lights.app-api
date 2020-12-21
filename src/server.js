@@ -26,7 +26,7 @@ app.get('/lights/:id', function(req, res) {
 });
 
 // put light state by light id
-app.put('lights/:id', function(req, res) {
+app.put('/lights/:id', function(req, res) {
 	// get led from route id
 	var led = leds[req.params.id];
 
