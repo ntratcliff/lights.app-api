@@ -4,8 +4,8 @@ var app = express();
 
 // TODO: get all lights (loaded from config)
 const leds = [
-	new Gpio(3, {mode: Gpio.OUTPUT}), // north
-	new Gpio(8, {mode: Gpio.OUTPUT}), // west
+	new Gpio(2, {mode: Gpio.OUTPUT}), // north
+	new Gpio(14, {mode: Gpio.OUTPUT}), // west
 ]
 
 app.use(express.json());
