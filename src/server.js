@@ -8,6 +8,8 @@ const leds = [
 	new Gpio(14, {mode: Gpio.OUTPUT}), // west
 ]
 
+leds.forEach(l => l.pwmWrite(0)); // start pwm on all lights
+
 app.use(express.json());
 
 // get light state by light id
