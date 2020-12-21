@@ -1,0 +1,116 @@
+lights.app/api/v1
+	POST
+		/profiles
+			- create new profile
+			- content: profile.json
+			- saves profile to db
+			- response: 
+				- status code 
+				- message.json + profile id
+		/profile/active
+			- set active profile
+			- content: 
+				{
+					"profile": "[profile name]",
+					"temporary": [bool],
+					("duration": [int(seconds)]) // optional, based on temporary flag
+				}
+			- pushes to active stack, doesn't pop
+			- response:
+				- status code
+				- message.json
+	GET
+		/profiles/all
+			- get all profiles
+			- response:
+				- status code
+				- success: profile-list.json
+				- fail: message.json
+		/profiles/active
+			- get all profiles in state stack
+			- response
+				- status code
+				- success: profile-list.json
+				- fail: message.json
+		/profile/[id]
+			- get profile detail by id
+			- response:
+				- status code
+				- success: profile.json
+				- fail: message.json
+		/profile/active
+			- get active profile and light states	
+			- response
+				- status code
+				- success: profile.json
+					- includes current light states as profile/lights/value field
+				- fail: message.json
+	PUT
+		/profile/[id]
+			- update existing profile
+			- content: profile.json
+			- response:
+				- status code
+				- message.json
+		/profile/active
+			- change current profile
+			- content:
+				{
+					"profile": "[profile name]",
+					"temporary": [bool],
+					("duration": [int(seconds)]) // optional, based on temporary flag
+				}
+			- pops current profile from stack then pushes
+			- response:
+				- status code
+				- message.json
+	DELETE
+		/profile/[id]
+			- deletes profile
+			- response:
+				- status code
+				- message.json
+		/profile/active
+			- pop profile from stack
+			- response
+				- status code
+				- message.json
+			
+defs:
+	profile.json
+	{
+		("id": [int]) // optional, included with server response
+		"name": "[name]",
+		("active": [bool]) // optional, included with server response
+		"type": "[time/static/etc]", // hard-coded for now?
+		... // based on type
+		"lights": [
+			{
+				"name": "north",
+				"type": "[profile type]", // hard-coded for now?
+				"value": [int(0-255)], // current/desired brightness value
+				... // based on type
+			},
+			{
+				"name": "west",
+				"type": "[profile type]", // hard-coded for now?
+				"value": [int(0-255)], // current/desired brightness value
+				... // based on type
+			}
+		]
+	}
+	profile-list.json
+	{
+		"profiles": [
+			{
+				"name": "[name]",
+				"id": [int]
+			},
+			...
+		]
+	}
+	message.json
+	{
+		"message": "[message]"
+		... // additional data by context
+	}
