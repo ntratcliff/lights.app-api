@@ -1,0 +1,32 @@
+{
+  "name": "lights.app-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntratcliff/lights.app-api.git"
+  },
+  "author": "Noah Ratcliff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ntratcliff/lights.app-api/issues"
+  },
+  "homepage": "https://github.com/ntratcliff/lights.app-api#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "husky": "^4.3.6"
+	},
+	"commitlint": {
+		"extends": ["@commitlint/config-conventional"]
+	},
+	"husky": {
+		"hooks": {
+			"commit-msg": "npx commitlint -E HUSKY_GIT_PARAMS"
+		}
+	}
+}
