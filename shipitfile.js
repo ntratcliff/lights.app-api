@@ -8,6 +8,10 @@ module.exports = shipit => {
 	const appName = "lights.app-api";
 	shipit.initConfig({
 		default: {
+			// semi-permanent workspace to cache node_modules :)
+			workspace: `/tmp/${appName}`,
+			shallowClone: false,
+			keepWorkspace: true,
 			branch: 'main',
 			dirToCopy: 'dist',
 			deployTo: '/home/lights/lights.app/api',
@@ -24,13 +28,16 @@ module.exports = shipit => {
 	});
 
 	const path = require('path');
+	const sharedPath = path.join(shipit.config.deployTo, 'shared');
 	const ecosystemFilePath = path.join(
-		shipit.config.deployTo,
-		'shared',
+		sharedPath,
 		'ecosystem.config.js'
 	);
 
 	/* ========== events ========== */
+	shipit.on('fetched', () => {
+		shipit.start('build');
+	})
 	shipit.on('updated', () => {
 		shipit.start('npm-install', 'copy-config');
 	});
@@ -40,8 +47,14 @@ module.exports = shipit => {
 	});
 
 	/* ========== tasks ========== */
-	shipit.task('build', function() {
-		shipit.local('npm run-script build')
+	shipit.blTask('build', async () => {
+		const op = {
+			cwd: shipit.workspace
+		}
+
+		console.log(`local path: ${op.cwd}`)
+		await shipit.local('npm install', op)
+		await shipit.local('npm run-script build', op)
 	})
 
 	shipit.blTask('copy-config', async () => {
@@ -75,7 +88,9 @@ module.exports = shipit => {
 	});
 
 	shipit.blTask('npm-install', async () => {
-		shipit.remote(`cd ${shipit.releasePath} && npm install --production`);
+		await shipit.copyToRemote('package.json', path.join(sharedPath, 'package.json'));
+		await shipit.copyToRemote('package-lock.json', path.join(sharedPath, 'package-lock.json'));
+		await shipit.remote(`cd ${sharedPath} && npm install --production`);
 	});
 
 	shipit.blTask('pm2-server', async () => {
