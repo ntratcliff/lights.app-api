@@ -20,23 +20,24 @@ app.get('/lights/:id', function(req, res) {
 
 	// TODO: handle invalid ids 
 
-	// send current pin value
+	// send current light value
 	res.send(JSON.stringify(light));
 });
 
 // put light state by light id
 app.put('/lights/:id', function(req, res) {
 	// get led from route id
-	var led = leds[req.params.id];
+	var light = lights[req.params.id];
 
 	// TODO: handle invalid ids
 
 	// get value from request body
 	var value = req.body.value // TODO: clamp [0,255]
 
-	led.pwmWrite(value)
+	// set value
+	light.value = value
 
-	// send current pin value
+	// send current light value
 	res.send(JSON.stringify(light));
 });
 
