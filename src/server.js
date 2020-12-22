@@ -1,30 +1,27 @@
-const { Gpio } = require("pigpio");
-const express = require("express");
-const cors = require("cors");
+import Light from './light'
+import express from 'express'
+import cors from 'cors'
 
 var app = express();
+
 app.use(cors()); // enables all cors requests
-app.use(express.json());
+app.use(express.json()); // parse request data as json
 
-// TODO: get all lights (loaded from config)
-const leds = [
-	new Gpio(2, {mode: Gpio.OUTPUT}), // north
-	new Gpio(14, {mode: Gpio.OUTPUT}), // west
+// TODO: load lights from config
+const lights = [
+	new Light(2), // north
+	new Light(14), // west
 ]
-
-leds.forEach(l => l.pwmWrite(0)); // start pwm on all lights
 
 // get light state by light id
 app.get('/lights/:id', function(req, res) {
 	// get led by route id
-	var led = leds[req.params.id];
+	var light = lights[req.params.id];
 
 	// TODO: handle invalid ids 
 
 	// send current pin value
-	res.send({
-		"value": led.getPwmDutyCycle() // [0,255]
-	});
+	res.send(JSON.stringify(light));
 });
 
 // put light state by light id
@@ -40,9 +37,7 @@ app.put('/lights/:id', function(req, res) {
 	led.pwmWrite(value)
 
 	// send current pin value
-	res.send({
-		"value": led.getPwmDutyCycle() // [0,255]
-	});
+	res.send(JSON.stringify(light));
 });
 
 var server = app.listen(8081, function() {
