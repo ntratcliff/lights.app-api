@@ -15,7 +15,8 @@ module.exports = shipit => {
 			shared: {
 				overwrite: true,
 				dirs: ['node_modules']
-			}
+			},
+			rsyncDrive: "/c"
 		},
 		production: {
 			servers: 'lights@192.168.1.120'
