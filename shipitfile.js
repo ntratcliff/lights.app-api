@@ -9,6 +9,7 @@ module.exports = shipit => {
 	shipit.initConfig({
 		default: {
 			branch: 'main',
+			dirToCopy: 'dist',
 			deployTo: '/home/lights/lights.app/api',
 			repositoryUrl: 'https://github.com/ntratcliff/lights.app-api.git',
 			keepReleases: 5,
@@ -16,7 +17,6 @@ module.exports = shipit => {
 				overwrite: true,
 				dirs: ['node_modules']
 			},
-			rsyncDrive: "/c"
 		},
 		production: {
 			servers: 'lights@192.168.1.120'
@@ -40,6 +40,10 @@ module.exports = shipit => {
 	});
 
 	/* ========== tasks ========== */
+	shipit.task('build', function() {
+		shipit.local('npm run-script build')
+	})
+
 	shipit.blTask('copy-config', async () => {
 		const fs = require('fs');
 
