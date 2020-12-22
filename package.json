@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-		"build": "babel src --out-dir dist",
-		"dist": "npm build",
+    "build": "babel src --out-dir dist",
+    "dist": "npm build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -36,7 +36,10 @@
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "husky": "^4.3.6",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "shipit-cli": "^5.3.0",
+    "shipit-deploy": "^5.3.0",
+    "shipit-shared": "^4.4.2"
   },
   "commitlint": {
     "extends": [
