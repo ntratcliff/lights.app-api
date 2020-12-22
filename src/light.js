@@ -1,7 +1,7 @@
-import Gpio from 'pigpio'
+import { Gpio } from 'pigpio'
 
 /** A PWM driven light */
-export class Light {
+export default class Light {
 	/**
 	 * Create a Light
 	 * @param {number} gpio The GPIO pin used to drive this light
