@@ -8,6 +8,7 @@ module.exports = shipit => {
 	const appName = "lights.app-api";
 	shipit.initConfig({
 		default: {
+			branch: 'main',
 			deployTo: '/home/lights/lights.app/api',
 			repositoryUrl: 'https://github.com/ntratcliff/lights.app-api.git',
 			keepReleases: 5,
