@@ -26,13 +26,13 @@ io.on('connection', (socket) => {
 	socket.emit('lights', lights);
 	
 	// client wants to set a light value
-	socket.on('set-value', (data) => {
+	socket.on('setValue', (data) => {
 		// TODO: handle invalid ids
 		var light = lights[data.id];	
 
 		light.value = data.value;
 
 		// notify all sockets that a light changed
-		io.emit('light-changed', light);
+		io.emit('lightChanged', light);
 	});
 });
