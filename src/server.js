@@ -5,8 +5,8 @@ import SocketIO from 'socket.io'
 // init lights
 // TODO: load from config file
 var lights = []
-lights.push(new Light(lights.length, 2)) // north
-lights.push(new Light(lights.length, 14)) // west
+lights.push(new Light(lights.length, 2, "North")) // north
+lights.push(new Light(lights.length, 14, "West")) // west
 
 // init web server
 var app = express()

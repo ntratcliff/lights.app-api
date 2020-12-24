@@ -6,12 +6,14 @@ export default class Light {
 	 * Create a Light
 	 * @param {number} id The ID for this light
 	 * @param {number} gpio The GPIO pin used to drive this light
+	 * @param {string} name The human-readable name for this light
 	 * @param {number} [value=0] The initial brightness value of the light [0, 255]
 	 */
-	constructor (id, gpio, value = 0) {
+	constructor (id, gpio, name, value = 0) {
 		this.gpio = new Gpio(gpio, {mode: Gpio.OUTPUT})
 		this.value = value // initializes pwm for this light
 		this.id = id
+		this.name = name
 	}
 
 	/**
@@ -33,6 +35,7 @@ export default class Light {
 	toJSON () {
 		return {
 			id: this.id,
+			name: this.name,
 			value: this.value
 		}
 	}
