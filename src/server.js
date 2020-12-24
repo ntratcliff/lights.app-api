@@ -1,6 +1,5 @@
 import Light from './light'
 import express from 'express'
-import cors from 'cors'
 import SocketIO from 'socket.io'
 
 // init lights
@@ -11,7 +10,6 @@ lights.push(new Light(lights.length, 14)); // west
 
 // init web server
 var app = express();
-app.use(cors()); // enables all cors requests
 app.use(express.json()); // parse request data as json
 
 var server = app.listen(8081, function() {
