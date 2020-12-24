@@ -19,7 +19,13 @@ var server = app.listen(8081, function() {
 });
 
 // init socket.io
-var io = SocketIO(server);
+var io = SocketIO(server, {
+	cors: {
+		origin: '*',
+		methods: ['GET', 'POST'],
+		credentials: true
+	}
+});
 
 io.on('connection', (socket) => {
 	// send current lights on connection complete
