@@ -10,7 +10,8 @@ export default class Light {
 	 */
 	constructor (id, gpio, value = 0) {
 		this.gpio = new Gpio(gpio, {mode: Gpio.OUTPUT})
-		this.value = value; // initializes pwm for this light
+		this.value = value // initializes pwm for this light
+		this.id = id
 	}
 
 	/**
