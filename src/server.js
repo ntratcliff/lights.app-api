@@ -6,6 +6,11 @@ import Light from './light'
 
 import config from './rooms.config.js'
 
+process.on('SIGINT', () => {
+	console.log("Interrupt signal detected. Server shutting down...")
+	process.exit()
+})
+
 // load rooms and lights from config
 var rooms = []
 var lights = []
