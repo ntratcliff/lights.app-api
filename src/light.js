@@ -1,5 +1,7 @@
 import { Gpio } from 'pigpio'
 
+const DEFAULT_LERP_SPEED = 100
+
 /** A PWM driven light */
 export default class Light {
 	/**
@@ -14,26 +16,72 @@ export default class Light {
 		this.gpio = new Gpio(options.gpio, {mode: Gpio.OUTPUT})
 
 		if (options.value) {
+			this.gpioValue = options.value
 			this.value = options.value // initializes pwm for this light
 		} else {
+			this.gpioValue = 0
 			this.value = 0
+		}
+
+		if (options.lerpSpeed) {
+			this.lerpSpeed = options.lerpSpeed
+		} else {
+			this.lerpSpeed = DEFAULT_LERP_SPEED
 		}
 	}
 
 	/**
 	 * Set the brightness value of the light [0, 255]
+	 * @param {number} v The brightness value [0, 255]
+	 */
+	set value (v) {
+		v = Math.min(Math.max(v, 0), 255) // clamp [0, 255]
+		this.targetValue = v
+
+		if (this.gpioValue !== this.targetValue && !this.lerpInterval) {
+			console.log(`${this.name} starting interpolation from ${this.gpioValue} to ${this.targetValue}`)
+			this.lerpInterval = setInterval(
+				this.lerpValue.bind(this), 
+				1000/this.lerpSpeed
+			)
+		}
+	}
+
+	get value () { return this.targetValue }
+
+	/**
+	 * Gets the raw gpio pin value for this light [0, 255]
+	 */
+	get gpioValue () {
+		return this.gpio.getPwmDutyCycle()
+	}
+	
+	/**
+	 * Sets the raw gpio pin value for this light [0, 255] 
 	 * @param {number} value The brightness value [0, 255]
 	 */
-	set value (value) {
-		value = Math.min(Math.max(value, 0), 255) // clamp [0, 255]
+	set gpioValue (value) {
 		this.gpio.pwmWrite(value)
 	}
 
-	/**
-	 * Get the brightness value of the light [0, 255]
+	/** 
+	 * Interpolates the gpio pin value to this light's value over time.
+	 * Called every N ms relative to lerpSpeed .
 	 */
-	get value () {
-		return this.gpio.getPwmDutyCycle()
+	lerpValue () {
+		if (this.gpioValue < this.value) {
+			console.log(`${this.name} going up!`)
+			this.gpioValue++;
+		}
+		else if(this.gpioValue > this.value) {
+			console.log(`${this.name} going down!`)
+			this.gpioValue--;
+		}
+		else if(this.gpioValue === this.value) {
+			console.log(`${this.name} done interpolating!`)
+			clearInterval(this.lerpInterval)
+			this.lerpInterval = null
+		}
 	}
 
 	toJSON () {
