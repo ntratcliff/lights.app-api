@@ -4,7 +4,7 @@ import SocketIO from 'socket.io'
 import Room from './room'
 import Light from './light'
 
-import config from 'rooms.config.js'
+import config from './rooms.config.js'
 
 // load rooms and lights from config
 var rooms = []
