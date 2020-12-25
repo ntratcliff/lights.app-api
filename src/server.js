@@ -1,12 +1,28 @@
-import Light from './light'
 import express from 'express'
 import SocketIO from 'socket.io'
 
-// init lights
-// TODO: load from config file
+import Room from './room'
+import Light from './light'
+
+import config from 'rooms.config.js'
+
+// load rooms and lights from config
+var rooms = []
 var lights = []
-lights.push(new Light(lights.length, 2, "North")) // north
-lights.push(new Light(lights.length, 14, "West")) // west
+
+config.rooms.forEach(data => {
+	// create room
+	var room = new Room(data.name)
+
+	// add lights to light array (and generate id from array index)
+	data.lights.forEach(options => {
+		var light = new Light(lights.length, options)
+		lights.push(light)
+		room.lights.push(light)
+	})
+
+	rooms.push(room)
+})
 
 // init web server
 var app = express()
@@ -48,4 +64,11 @@ io.on('connection', (socket) => {
 		var light = lights[data.id]
 		callback(light)
 	}, )
+
+	// rooms also have light info
+	socket.on('getRooms', (data, callback) => {
+		console.log('getRooms')
+
+		callback(rooms)
+	})
 })

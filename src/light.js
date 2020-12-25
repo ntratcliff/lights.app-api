@@ -5,15 +5,19 @@ export default class Light {
 	/**
 	 * Create a Light
 	 * @param {number} id The ID for this light
-	 * @param {number} gpio The GPIO pin used to drive this light
-	 * @param {string} name The human-readable name for this light
-	 * @param {number} [value=0] The initial brightness value of the light [0, 255]
+	 * @param {object} options The light options
 	 */
-	constructor (id, gpio, name, value = 0) {
-		this.gpio = new Gpio(gpio, {mode: Gpio.OUTPUT})
-		this.value = value // initializes pwm for this light
+	constructor (id, options) {
 		this.id = id
-		this.name = name
+		this.name = options.name
+		
+		this.gpio = new Gpio(options.gpio, {mode: Gpio.OUTPUT})
+
+		if (options.value) {
+			this.value = options.value // initializes pwm for this light
+		} else {
+			this.value = 0
+		}
 	}
 
 	/**

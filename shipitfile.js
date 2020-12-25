@@ -33,6 +33,10 @@ module.exports = shipit => {
 		sharedPath,
 		'ecosystem.config.js'
 	);
+	const roomsConfigFilePath = path.join(
+		sharedPath,
+		'rooms.config.js'
+	);
 
 	/* ========== events ========== */
 	shipit.on('fetched', () => {
@@ -85,6 +89,7 @@ module.exports = shipit => {
 		});
 
 		await shipit.copyToRemote('ecosystem.config.js', ecosystemFilePath);
+		await shipit.copyToRemote('rooms.config.js', roomsConfigFilePath);
 	});
 
 	shipit.blTask('npm-install', async () => {
