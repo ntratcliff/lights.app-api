@@ -19,13 +19,6 @@ module.exports = {
 				{ name: "North", gpio: 2 },
 				{ name: "West", gpio: 14 }
 			]
-		},
-		{
-			name: "Dev",
-			lights: [
-				{ name: "North", gpio: 15 },
-				{ name: "West", gpio: 18 }
-			]
 		}
 	]	
 }
