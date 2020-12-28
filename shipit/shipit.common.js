@@ -24,8 +24,11 @@ module.exports = shipit => {
 				]
 			},
 		},
+		development: {
+			servers: 'lights@blackberry.local'
+		},
 		production: {
-			servers: 'lights@192.168.1.120'
+			servers: 'lights@raspberry.local'
 		}
 	})
 
