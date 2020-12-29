@@ -40,6 +40,7 @@ export class SimpleAction extends Action {
 	}
 
 	apply () {
+		console.log("applying action") // DEBUG
 		this.values.foreach(l => {
 			var light = lights[l.id] // TODO: reference lights by name?
 			if (light) {

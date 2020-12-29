@@ -3,16 +3,21 @@ import { Action } from "./actions"
 export default class State {
 	cosntructor (source, lights) {
 		this.actions = []
+		this.name = ""
 
 		Object.assign(this, source)
-		this.actions = this.actions.map(a => {
-			return Action.from(a.type, a, lights)
+
+		console.log(`${this.name}: instantiating actions...`) // DEBUG
+		this.actions = this.actions.map(a =>  {
+			var action = Action.from(a.type, a, lights)
+			console.log(action) // DEBUG
+			return action;
 		})
 	}
 
 	enter () {
-		console.log("enter!")
-		console.log(this)
+		console.log("enter!") // DEBUG 
+		console.log(this) // DEBUG
 		this.actions.forEach(a => a.apply())
 	}
 
