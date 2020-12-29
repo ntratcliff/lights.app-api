@@ -89,7 +89,7 @@ io.on('connection', (socket) => {
 
 function enterState (state, replaceCurrent = false) {
 	if (states.length > 0) {
-		states[length - 1].leave() // leave previous state, if any
+		states[states.length - 1].leave() // leave previous state, if any
 
 		if (replaceCurrent) {
 			states.pop()
@@ -97,7 +97,7 @@ function enterState (state, replaceCurrent = false) {
 	}
 
 	states.push(state)
-	states[length - 1].enter() // enter new state
+	states[states.length - 1].enter() // enter new state
 }
 
 function leaveCurrentState() {
@@ -107,6 +107,6 @@ function leaveCurrentState() {
 	}
 
 	if (states.length > 0) {
-		states[length - 1].enter()
+		states[states.length - 1].enter()
 	}
 }
