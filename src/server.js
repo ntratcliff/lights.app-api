@@ -36,6 +36,7 @@ var states = []
 
 // push default state
 const defaultState = require('./state.default.json')
+console.log(defaultState)
 enterState(new State(defaultState))
 
 // init web server
@@ -100,7 +101,7 @@ function enterState (state, replaceCurrent = false) {
 	states[states.length - 1].enter() // enter new state
 }
 
-function leaveCurrentState() {
+function leaveCurrentState () {
 	var state = states.pop()
 	if (state) {
 		state.leave()

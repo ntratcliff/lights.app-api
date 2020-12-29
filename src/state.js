@@ -2,6 +2,8 @@ import { Action } from "./actions"
 
 export default class State {
 	cosntructor (source, lights) {
+		this.actions = []
+
 		Object.assign(this, source)
 		this.actions.map(a => {
 			return Action.from(a.type, a, lights)

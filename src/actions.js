@@ -32,7 +32,10 @@ export class Action {
  */
 export class SimpleAction extends Action {
 	constructor (source, lights) {
+		this.values = []
+
 		super(source, lights)
+
 		this.originalValues = []
 	}
 
