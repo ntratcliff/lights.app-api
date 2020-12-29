@@ -2,9 +2,11 @@ import { Action } from "./actions"
 
 export default class State {
 	cosntructor (source, lights) {
+		console.log("state constructor called")
 		this.actions = []
 		this.name = ""
 
+		console.log("assigning object...")
 		Object.assign(this, source)
 
 		console.log(`${this.name}: instantiating actions...`) // DEBUG

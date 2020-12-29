@@ -6,7 +6,6 @@ import Light from './light'
 
 import config from './rooms.config.js'
 import State from './state'
-import { SimpleAction } from './actions'
 
 process.on('SIGINT', () => {
 	console.log("Interrupt signal detected. Server shutting down...")
