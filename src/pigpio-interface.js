@@ -1,0 +1,1 @@
+/** Wrapper for pigpio module that provides an emulator if pigpio isn't available */

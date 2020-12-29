@@ -1,7 +1,3 @@
-const types = {
-	'simple': SimpleAction
-}
-
 export class Action {
 
 	/** Creates Action object from source properties */
@@ -58,4 +54,8 @@ export class SimpleAction extends Action {
 			}
 		})
 	}
+}
+
+const types = {
+	'simple': SimpleAction
 }

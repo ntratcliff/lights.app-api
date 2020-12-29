@@ -1,11 +1,11 @@
 import express from 'express'
-import SocketIO from 'socket.io'
+import { Server } from 'socket.io'
 
-import Room from './room'
-import Light from './light'
+import Room from './src/room.js'
+import Light from './src/light.js'
 
 import config from './rooms.config.js'
-import State from './state'
+import State from './src/state.js'
 
 process.on('SIGINT', () => {
 	console.log("Interrupt signal detected. Server shutting down...")
@@ -48,7 +48,7 @@ var server = app.listen(8081, function() {
 })
 
 // init socket.io
-var io = SocketIO(server);
+var io = Server(server);
 
 io.on('connection', (socket) => {
 	console.log(`connected to ${socket.id}`)

@@ -2,7 +2,8 @@
   "name": "lights.app-api",
   "version": "0.0.1",
   "description": "",
-  "main": "src/server.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
     "dist": "npx shipit --shipitfile shipit/shipit.quick.js production deploy",
     "dist:clean": "npx shipit --shipitfile shipit/shipit.clean.js production deploy",
