@@ -36,7 +36,6 @@ var states = []
 
 // push default state
 const defaultState = require('./state.default.json')
-console.log(defaultState)
 enterState(new State(defaultState))
 
 // init web server
@@ -89,6 +88,9 @@ io.on('connection', (socket) => {
 })
 
 function enterState (state, replaceCurrent = false) {
+	console.log("entering state")
+	console.log(state)
+
 	if (states.length > 0) {
 		states[states.length - 1].leave() // leave previous state, if any
 
