@@ -9,10 +9,26 @@ module.exports = shipit => {
 	shipit.initConfig({
 		default: {
 			branch: 'states',
-			dirToCopy: 'src',
-			deployTo: '/home/lights/lights.app/api',
+			deployTo: '/home/lights/lights.app/api/',
 			repositoryUrl: 'https://github.com/ntratcliff/lights.app-api.git',
 			keepReleases: 5,
+			ignores: [
+				'.git',
+				'.gitignore',
+				'.env', 
+				'LICENSE', 
+				'.eslintrc.js', 
+				'docs', 
+				'shipit',
+				// shared
+				'node_modules', 
+				'.nvmrc',
+				'ecosystem.config.js',
+				'rooms.config.js',
+				'package.json',
+				'package-lock.json',
+				'state.default.json'
+			],
 			shared: {
 				overwrite: true,
 				dirs: ['node_modules'],
@@ -61,7 +77,7 @@ module.exports = shipit => {
 		)
 		const ecosystemPath = path.join(
 			shipit.releasePath,
-			'ecosystem.config.js'
+			'ecosystem.config.cjs'
 		)
 
  		await shipit.remote(
