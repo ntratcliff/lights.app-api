@@ -8,7 +8,7 @@ module.exports = shipit => {
 	/* ========== config ========== */
 	shipit.initConfig({
 		default: {
-			branch: 'main',
+			branch: 'states',
 			dirToCopy: 'dist',
 			deployTo: '/home/lights/lights.app/api',
 			repositoryUrl: 'https://github.com/ntratcliff/lights.app-api.git',
@@ -20,7 +20,8 @@ module.exports = shipit => {
 					'ecosystem.config.js',
 					'rooms.config.js',
 					'package.json',
-					'package-lock.json'
+					'package-lock.json',
+					'state.default.json'
 				]
 			},
 		},
