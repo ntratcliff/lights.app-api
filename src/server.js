@@ -5,6 +5,8 @@ import Room from './room'
 import Light from './light'
 
 import config from './rooms.config.js'
+import State from './state'
+import { SimpleAction } from './actions'
 
 process.on('SIGINT', () => {
 	console.log("Interrupt signal detected. Server shutting down...")
@@ -28,6 +30,13 @@ config.rooms.forEach(data => {
 
 	rooms.push(room)
 })
+
+/** @var {State[]} states Stack of states. Top of stack is active state. */
+var states = []
+
+// push default state
+const defaultState = require('./state.default.json')
+states.push(new State(defaultState))
 
 // init web server
 var app = express()
