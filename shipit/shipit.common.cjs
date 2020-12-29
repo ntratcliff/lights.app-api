@@ -20,21 +20,13 @@ module.exports = shipit => {
 				'.eslintrc.js', 
 				'docs', 
 				'shipit',
-				// shared
-				'node_modules', 
-				'.nvmrc',
-				'ecosystem.config.js',
-				'rooms.config.js',
-				'package.json',
-				'package-lock.json',
-				'state.default.json'
 			],
 			shared: {
 				overwrite: true,
 				dirs: ['node_modules'],
 				files: [
 					'.nvmrc',
-					'ecosystem.config.js',
+					'ecosystem.config.cjs',
 					'rooms.config.js',
 					'package.json',
 					'package-lock.json',
@@ -75,13 +67,9 @@ module.exports = shipit => {
   		await shipit.remote(
 			`sudo pm2 delete -s ${package.name} || :`
 		)
-		const ecosystemPath = path.join(
-			shipit.releasePath,
-			'ecosystem.config.cjs'
-		)
 
  		await shipit.remote(
-			`sudo pm2 start --env production --watch true && sudo pm2 save`, 
+			`sudo pm2 start ecosystem.config.cjs --env production --watch true && sudo pm2 save`, 
 			{ cwd: shipit.releasePath }
   		)
 	})
