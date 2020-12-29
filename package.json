@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "serve": "node dist/server.js",
     "build": "babel src --out-dir dist",
+    "serve:rebuild": "npm run-script build && npm run-script serve",
     "dist": "npx shipit --shipitfile shipit/shipit.quick.js production deploy",
     "dist:clean": "npx shipit --shipitfile shipit/shipit.clean.js production deploy",
     "dist:dev": "npx shipit --shipitfile shipit/shipit.quick.js development deploy",
