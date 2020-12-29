@@ -36,7 +36,7 @@ var states = []
 
 // push default state
 const defaultState = require('./state.default.json')
-addState(new State(defaultState))
+enterState(new State(defaultState))
 
 // init web server
 var app = express()
