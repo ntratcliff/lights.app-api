@@ -1,7 +1,7 @@
 import { Action } from './actions.js'
 
 export default class State {
-	cosntructor (source, lights) {
+	constructor (source, lights) {
 		console.log("state constructor called")
 		this.actions = []
 		this.name = ""

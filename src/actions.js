@@ -16,7 +16,7 @@ export class Action {
 
 	static from(type, source, lights) {
 		if (types[type]) {
-			return types[type](source, lights)
+			return new types[type](source, lights)
 		}
 	}
 }
@@ -28,17 +28,14 @@ export class Action {
  */
 export class SimpleAction extends Action {
 	constructor (source, lights) {
-		this.values = []
-
 		super(source, lights)
-
 		this.originalValues = []
 	}
 
 	apply () {
 		console.log("applying action") // DEBUG
-		this.values.foreach(l => {
-			var light = lights[l.id] // TODO: reference lights by name?
+		this.values.forEach(l => {
+			var light = this.lights[l.id] // TODO: reference lights by name?
 			if (light) {
 				this.originalValues[l.id] = light.value
 				light.value = l.value
@@ -47,8 +44,8 @@ export class SimpleAction extends Action {
 	}
 
 	undo () {
-		this.values.foreach(l => {
-			var light = lights[l.id]
+		this.values.forEach(l => {
+			var light = this.lights[l.id]
 			if (light) {
 				light.value = this.originalValues[l.id]
 			}

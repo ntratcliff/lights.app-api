@@ -1,11 +1,15 @@
 import express from 'express'
 import { Server } from 'socket.io'
+import dotenv from 'dotenv'
 
 import Room from './src/room.js'
 import Light from './src/light.js'
 
 import config from './rooms.config.js'
 import State from './src/state.js'
+import defaultState from './state.default.js'
+
+dotenv.config() // init dotenv
 
 process.on('SIGINT', () => {
 	console.log("Interrupt signal detected. Server shutting down...")
@@ -34,8 +38,8 @@ config.rooms.forEach(data => {
 var states = []
 
 // push default state
-const defaultState = require('./state.default.json')
-enterState(new State(defaultState, lights))
+var initState = new State(defaultState, lights)
+enterState(initState)
 
 // init web server
 var app = express()
@@ -48,7 +52,7 @@ var server = app.listen(8081, function() {
 })
 
 // init socket.io
-var io = Server(server);
+var io = new Server(server);
 
 io.on('connection', (socket) => {
 	console.log(`connected to ${socket.id}`)
