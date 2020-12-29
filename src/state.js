@@ -1,4 +1,4 @@
-import { Action } from './actions.js'
+import { Action } from "./actions"
 
 export default class State {
 	constructor (source, lights) {

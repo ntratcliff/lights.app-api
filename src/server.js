@@ -1,12 +1,12 @@
 import express from 'express'
-import { Server } from 'socket.io'
+import SocketIO from 'socket.io'
 import dotenv from 'dotenv'
 
-import Room from './src/room.js'
-import Light from './src/light.js'
+import Room from './room'
+import Light from './light'
 
 import config from './rooms.config.js'
-import State from './src/state.js'
+import State from './state'
 import defaultState from './state.default.js'
 
 dotenv.config() // init dotenv
@@ -52,7 +52,7 @@ var server = app.listen(8081, function() {
 })
 
 // init socket.io
-var io = new Server(server);
+var io = SocketIO(server);
 
 io.on('connection', (socket) => {
 	console.log(`connected to ${socket.id}`)

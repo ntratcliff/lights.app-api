@@ -11,7 +11,7 @@
  * @param {number} [value=0] The initial brightness value of the light [0, 255]
  */
 
-export default {
+module.exports = {
 	rooms: [
 		{
 			name: "Living Room",
