@@ -36,7 +36,7 @@ var states = []
 
 // push default state
 const defaultState = require('./state.default.json')
-states.push(new State(defaultState))
+addState(new State(defaultState))
 
 // init web server
 var app = express()
@@ -86,3 +86,27 @@ io.on('connection', (socket) => {
 		callback(rooms)
 	})
 })
+
+function enterState (state, replaceCurrent = false) {
+	if (states.length > 0) {
+		states[length - 1].leave() // leave previous state, if any
+
+		if (replaceCurrent) {
+			states.pop()
+		}
+	}
+
+	states.push(state)
+	states[length - 1].enter() // enter new state
+}
+
+function leaveCurrentState() {
+	var state = states.pop()
+	if (state) {
+		state.leave()
+	}
+
+	if (states.length > 0) {
+		states[length - 1].enter()
+	}
+}
