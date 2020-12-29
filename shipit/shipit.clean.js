@@ -3,7 +3,6 @@ module.exports = shipit => {
 
 	/* ========== events ========== */
 	shipit.on('updated', () => {
-		shipit.start('nvm')
 		shipit.start('npm-install')
 	})
 
@@ -13,11 +12,6 @@ module.exports = shipit => {
 		shipit.config.deployTo,
 		'shared'
 	)
-
-	shipit.blTask('nvm', async () => {
-		await shipit.remote('nvm install', { cwd: sharedPath })
-	})
-
 	shipit.blTask('npm-install', async () => {
 		await shipit.remote(`cd ${sharedPath} && npm install --production`)
 	})

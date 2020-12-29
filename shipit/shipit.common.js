@@ -9,7 +9,8 @@ module.exports = shipit => {
 	shipit.initConfig({
 		default: {
 			branch: 'states',
-			deployTo: '/home/lights/lights.app/api/',
+			dirToCopy: 'dist',
+			deployTo: '/home/lights/lights.app/api',
 			repositoryUrl: 'https://github.com/ntratcliff/lights.app-api.git',
 			keepReleases: 5,
 			ignores: [
@@ -25,8 +26,7 @@ module.exports = shipit => {
 				overwrite: true,
 				dirs: ['node_modules'],
 				files: [
-					'.nvmrc',
-					'ecosystem.config.cjs',
+					'ecosystem.config.js',
 					'rooms.config.js',
 					'package.json',
 					'package-lock.json',
@@ -45,6 +45,10 @@ module.exports = shipit => {
 	const path = require('path')
 
 	/* ========== events ========== */
+	shipit.on('fetched', () => {
+		shipit.start('build')
+	})
+
 	shipit.on('published', () => {
 		shipit.start('pm2-server')
 	})
@@ -54,6 +58,16 @@ module.exports = shipit => {
 	})
 
 	/* ========== tasks ========== */
+	shipit.blTask('build', async () => {
+		const op = {
+			cwd: shipit.workspace
+		}
+
+		console.log(`local path: ${op.cwd}`)
+		await shipit.local('npm install', op)
+		await shipit.local('npm run-script build', op)
+	})
+
 	const sharedPath = path.join(shipit.config.deployTo, 'shared')
 
 	shipit.blTask('copy-config', async () => {

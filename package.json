@@ -4,10 +4,11 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "dist": "npx shipit --shipitfile shipit/shipit.quick.cjs production deploy",
-    "dist:clean": "npx shipit --shipitfile shipit/shipit.clean.cjs production deploy",
-    "dist:dev": "npx shipit --shipitfile shipit/shipit.quick.cjs development deploy",
-    "dist:dev:clean": "npx shipit --shipitfile shipit/shipit.clean.cjs development deploy",
+    "build": "babel src --out-dir dist",
+    "dist": "npx shipit --shipitfile shipit/shipit.quick.js production deploy",
+    "dist:clean": "npx shipit --shipitfile shipit/shipit.clean.js production deploy",
+    "dist:dev": "npx shipit --shipitfile shipit/shipit.quick.js development deploy",
+    "dist:dev:clean": "npx shipit --shipitfile shipit/shipit.clean.js development deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
