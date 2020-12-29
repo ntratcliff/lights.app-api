@@ -1,4 +1,4 @@
-import { Gpio } from './pigpio-interface.js'
+import Gpio from './pigpio-interface.js'
 
 const DEFAULT_LERP_SPEED = 100
 
