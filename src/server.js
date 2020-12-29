@@ -4,10 +4,9 @@ import dotenv from 'dotenv'
 
 import Room from './room'
 import Light from './light'
-
-import config from './rooms.config.js'
 import State from './state'
-import defaultState from './state.default.js'
+
+import config from '../rooms.config.js'
 
 dotenv.config() // init dotenv
 
@@ -38,6 +37,7 @@ config.rooms.forEach(data => {
 var states = []
 
 // push default state
+const defaultState = require('../state.default.json')
 var initState = new State(defaultState, lights)
 enterState(initState)
 
