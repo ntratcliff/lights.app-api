@@ -1,5 +1,5 @@
 module.exports = shipit => {
-	require('./shipit.common.cjs')(shipit)
+	require('./shipit.common.js')(shipit)
 
 	/* ========== events ========== */
 	shipit.on('updated', () => {
