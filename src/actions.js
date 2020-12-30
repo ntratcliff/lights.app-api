@@ -71,6 +71,7 @@ export class TimeAction extends Action {
 
 					// get closest time before current time
 					var previous = null
+					var prevIndex = -1
 					for (let i = 0; i < values.length; i++) {
 						var v = values[i];
 						var time = DateTime.fromISO(v.time)
@@ -79,12 +80,12 @@ export class TimeAction extends Action {
 								time: time,
 								value: v.value
 							}
+							prevIndex = i
 						}
 					}
 
 					// get next time in list
-					var nextIndex = values.indexOf(previous) + 1
-					nextIndex %= values.length
+					var nextIndex = (prevIndex + 1) % values.length
 					var next = values[nextIndex]
 					next = {
 						time: DateTime.fromISO(next.time),
