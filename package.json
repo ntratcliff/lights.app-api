@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "serve": "node dist/server.js",
     "build": "babel src --out-dir dist",
+    "serve:rebuild": "npm run-script build && npm run-script serve",
     "dist": "npx shipit --shipitfile shipit/shipit.quick.js production deploy",
     "dist:clean": "npx shipit --shipitfile shipit/shipit.clean.js production deploy",
     "dist:dev": "npx shipit --shipitfile shipit/shipit.quick.js development deploy",
@@ -23,6 +25,7 @@
   "homepage": "https://github.com/ntratcliff/lights.app-api#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "pigpio": "^3.2.4",
     "socket.io": "^3.0.4"

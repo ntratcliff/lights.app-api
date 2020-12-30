@@ -1,10 +1,14 @@
 import express from 'express'
 import SocketIO from 'socket.io'
+import dotenv from 'dotenv'
 
 import Room from './room'
 import Light from './light'
+import State from './state'
 
-import config from './rooms.config.js'
+import config from '../rooms.config.js'
+
+dotenv.config() // init dotenv
 
 process.on('SIGINT', () => {
 	console.log("Interrupt signal detected. Server shutting down...")
@@ -28,6 +32,14 @@ config.rooms.forEach(data => {
 
 	rooms.push(room)
 })
+
+/** @var {State[]} states Stack of states. Top of stack is active state. */
+var states = []
+
+// push default state
+const defaultState = require('../state.default.json')
+var initState = new State(defaultState, lights)
+enterState(initState)
 
 // init web server
 var app = express()
@@ -77,3 +89,30 @@ io.on('connection', (socket) => {
 		callback(rooms)
 	})
 })
+
+function enterState (state, replaceCurrent = false) {
+	console.log("entering state")
+	console.log(state)
+
+	if (states.length > 0) {
+		states[states.length - 1].leave() // leave previous state, if any
+
+		if (replaceCurrent) {
+			states.pop()
+		}
+	}
+
+	states.push(state)
+	states[states.length - 1].enter() // enter new state
+}
+
+function leaveCurrentState () {
+	var state = states.pop()
+	if (state) {
+		state.leave()
+	}
+
+	if (states.length > 0) {
+		states[states.length - 1].enter()
+	}
+}

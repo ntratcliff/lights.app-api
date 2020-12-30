@@ -13,6 +13,12 @@ module.exports = shipit => {
 			deployTo: '/home/lights/lights.app/api',
 			repositoryUrl: 'https://github.com/ntratcliff/lights.app-api.git',
 			keepReleases: 5,
+			copy: false, // don't copy previous release to new 
+			deploy: {
+				remoteCopy: {
+					copyAsDir: true // copy dirToCopy as directory not just contents
+				}
+			},
 			shared: {
 				overwrite: true,
 				dirs: ['node_modules'],
@@ -20,7 +26,8 @@ module.exports = shipit => {
 					'ecosystem.config.js',
 					'rooms.config.js',
 					'package.json',
-					'package-lock.json'
+					'package-lock.json',
+					'state.default.json',
 				]
 			},
 		},
@@ -71,13 +78,9 @@ module.exports = shipit => {
   		await shipit.remote(
 			`sudo pm2 delete -s ${package.name} || :`
 		)
-		const ecosystemPath = path.join(
-			shipit.releasePath,
-			'ecosystem.config.js'
-		)
 
  		await shipit.remote(
-			`sudo pm2 start --env production --watch true && sudo pm2 save`, 
+			`sudo pm2 start ecosystem.config.js --env production --watch true && sudo pm2 save`, 
 			{ cwd: shipit.releasePath }
   		)
 	})

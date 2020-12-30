@@ -1,0 +1,12 @@
+{
+	"name": "Simple test",
+	"actions": [
+		{
+			"type": "simple",
+			"values": [
+				{ "id": 0, "value": 255 },
+				{ "id": 1, "value": 0 }
+			]
+		}
+	]
+}
