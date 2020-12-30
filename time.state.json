@@ -1,0 +1,28 @@
+{
+	"name": "Time test",
+	"actions": [
+		{
+			"type": "time",
+			"timings": [
+				{
+					"id": 0,
+					"values": [
+						{ "time": "06:00:00", "value": 0 },
+						{ "time": "08:00:00", "value": 255 },
+						{ "time": "18:00:00", "value": 255 },
+						{ "time": "22:15:00", "value": 0 }
+					]
+				},
+				{
+					"id": 1,
+					"values": [
+						{ "time": "06:00:00", "value": 0 },
+						{ "time": "10:00:00", "value": 255 },
+						{ "time": "20:00:00", "value": 255 },
+						{ "time": "22:15:00", "value": 0 }
+					]
+				}
+			]
+		}
+	]
+}

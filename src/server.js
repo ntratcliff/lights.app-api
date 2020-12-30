@@ -37,7 +37,7 @@ config.rooms.forEach(data => {
 var states = []
 
 // push default state
-const defaultState = require('../state.default.json')
+const defaultState = require('../time.state.json')
 var initState = new State(defaultState, lights)
 enterState(initState)
 

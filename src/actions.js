@@ -1,9 +1,12 @@
+import { DateTime } from 'luxon'
+
 export class Action {
 
 	/** Creates Action object from source properties */
 	constructor (source, lights) {
 		Object.assign(this, source)
 		this.lights = lights;
+		this.originalValues = []
 	}
 
 	/* Applies the action to its lights */
@@ -27,13 +30,7 @@ export class Action {
  * e.x { id: 0, value: 255 }
  */
 export class SimpleAction extends Action {
-	constructor (source, lights) {
-		super(source, lights)
-		this.originalValues = []
-	}
-
 	apply () {
-		console.log("applying action") // DEBUG
 		this.values.forEach(l => {
 			var light = this.lights[l.id] // TODO: reference lights by name?
 			if (light) {
@@ -53,6 +50,94 @@ export class SimpleAction extends Action {
 	}
 }
 
+export class TimeAction extends Action {
+	constructor (source, lights) {
+		super (source, lights)
+		this.listeners = {}
+	}
+
+	apply () {
+		this.timings.forEach(t => {
+			var light = this.lights[t.id]
+			if (light) {
+				this.originalValues[t.id] = light.value
+
+				// create update function
+				this.listeners[t.id] = {}
+				this.listeners[t.id].function = ((light, values) => {
+					console.log(`Updating light ${light.name} from time action`)
+					// current time
+					var current = DateTime.local()
+
+					// get closest time before current time
+					var previous = null
+					for (let i = 0; i < values.length; i++) {
+						var v = values[i];
+						var time = DateTime.fromISO(v.time)
+						if (!previous || time < current) {
+							previous = {
+								time: time,
+								value: v.value
+							}
+						}
+					}
+
+					// get next time in list
+					var nextIndex = values.indexOf(previous) + 1
+					nextIndex %= values.length
+					var next = values[nextIndex]
+					next = {
+						time: DateTime.fromISO(next.time),
+						value: next.value
+					}
+
+					// calculate current time relative to prev/next
+					var range = next.time.diff(previous.time)
+					var norm = current.diff(previous.time)
+					var progress = norm.milliseconds / range.milliseconds
+
+					range = next.value - previous.value
+					
+					// set light value by progress between previous and current
+					// linear interpolation between [previous.value, next.value]
+					var v = Math.round(progress * range)
+					console.log(`Value: ${v}`)
+					light.value = v
+				}).bind(null, light, t.values)
+
+				// calculate update frequency from timing values
+				var maxSpeed = null
+				for (let i = 1; i < t.values.length; i++) {
+					var v = t.values[i]
+					var p = t.values[i-1]
+					var td = DateTime.fromISO(v.time).diff(DateTime.fromISO(p.time), "seconds")
+					var vd = v.value - p.value
+					var speed = vd / td.seconds // value change / time
+					if (speed > maxSpeed) maxSpeed = speed
+				}
+
+				console.log(`Update rate for ${light.name} is ${maxSpeed}/s`)
+				this.listeners[t.id].function()
+				this.listeners[t.id].handle = setInterval(
+					this.listeners[t.id].function, 
+					1000 / maxSpeed
+				)
+			} 
+		})
+	}
+
+	undo () {
+		this.timings.forEach(t => {
+			var light = this.lights[t.id]
+			if (light) {
+				clearInterval(this.listeners[t.id].handle)
+				light.value = this.originalValues[t.id]
+			}
+		})
+	}
+}
+
 const types = {
-	'simple': SimpleAction
+	'simple': SimpleAction,
+	'time': TimeAction
 }
