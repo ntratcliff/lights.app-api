@@ -27,7 +27,8 @@ module.exports = shipit => {
 					'rooms.config.js',
 					'package.json',
 					'package-lock.json',
-					'state.default.json',
+					'default.state.json',
+					'time.state.json'
 				]
 			},
 		},
