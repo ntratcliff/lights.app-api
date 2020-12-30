@@ -1,4 +1,4 @@
-import Pigpio from 'pigpio'
+import { Gpio as Pigpio } from 'pigpio'
 
 const FakeModes = {
 	INPUT: "INPUT",
@@ -27,7 +27,7 @@ class EmulatedGpio
 }
 
 /** Wrapper for pigpio module that provides an emulator if pigpio isn't available */
-export default (() => {
+export let Gpio = (() => {
 	if (process.env.PIGPIO) {
 		return Pigpio
 	} else {
