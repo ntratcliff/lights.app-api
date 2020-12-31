@@ -29,9 +29,12 @@ export class Action {
 		return copy
 	}
 
-	static from(type, source, lights) {
-		if (types[type]) {
-			return new types[type](source, lights)
+	static from(source, lights) {
+		source.type = source.type.toLowerCase()
+		if (types[source.type]) {
+			return new types[source.type](source, lights)
+		} else {
+			throw `Unexpected action type ${source.type}`
 		}
 	}
 }

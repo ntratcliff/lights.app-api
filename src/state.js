@@ -11,7 +11,7 @@ export default class State {
 
 		console.log(`${this.name}: instantiating actions...`) // DEBUG
 		this.actions = this.actions.map(a =>  {
-			var action = Action.from(a.type, a, lights)
+			var action = Action.from(a, lights)
 			console.log(action) // DEBUG
 			return action;
 		})
