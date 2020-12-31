@@ -4,14 +4,25 @@ class TimeState {
 	constructor () {
 		this.name = "Time state debug"
 
-		// create time-based values repeating 0-255-0 every 2 minutes
 		const values = []
-		for (let i = 0; i < 10; i++) {
+
+		// 0-255-0 over 1 minute
+		var time = DateTime.local()
+		for (let i = 0; i < 3; i++) {
 			values.push({
-				time: DateTime.local().plus({ minutes: i })
-					.toLocaleString(DateTime.TIME_24_WITH_SECONDS),
+				time: time.toLocaleString(DateTime.TIME_24_WITH_SECONDS),
 				value: i % 2 * 255
 			})
+			time = time.plus({ seconds: 30 })
+		}
+
+		// 0-128-0 over 2 minutes
+		for (let i = 0; i < 3; i++) {
+			values.push({
+				time: time.toLocaleString(DateTime.TIME_24_WITH_SECONDS),
+				value: i % 2 * 128
+			})
+			time = time.plus({ minutes: 1 })
 		}
 
 		console.log("(Debug) timeState timings:")
