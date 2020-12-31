@@ -73,6 +73,8 @@ module.exports = shipit => {
 			await shipit.copyToRemote(file, path.join(sharedPath, file))	
 
 		await shipit.config.shared.files.forEach(f => sharedCopy(f.path))
+
+		shipit.emit('config-copied')
 	})
 
 	shipit.blTask('pm2-server', async () => {

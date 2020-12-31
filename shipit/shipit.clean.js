@@ -2,7 +2,7 @@ module.exports = shipit => {
 	require('./shipit.common.js')(shipit)
 
 	/* ========== events ========== */
-	shipit.on('updated', () => {
+	shipit.on('config-copied', () => {
 		shipit.start('npm-install')
 	})
 
