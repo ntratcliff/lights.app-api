@@ -152,11 +152,10 @@ class TimeAnimatedLight {
 		this.light.value = v
 
 		// calculate next update time from current and next timings
-		// rate = |(v2 - v1) / (t2 - t1)|
-		// range = t2 - t1
 		var vd = next.value - previous.value
 		var rate = 0
 		if(vd !== 0) {
+			// rate = |(v2 - v1) / (t2 - t1)|
 			rate = Math.floor(1 / Math.abs(vd / range))
 		} else { // no value change until next time 
 			rate = range - norm // range - norm = ms to next time
