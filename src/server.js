@@ -38,6 +38,10 @@ var states = []
 
 // push default state
 const defaultState = require('../time.state.json')
+
+// const defaultState = require('./debug').timeState
+// console.log(defaultState)
+
 var initState = new State(defaultState, lights)
 enterState(initState)
 

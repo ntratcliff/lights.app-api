@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { Interpolation, Easing } from '@tweenjs/tween.js'
 
 export class Action {
 
@@ -96,12 +97,13 @@ export class TimeAction extends Action {
 					var range = next.time.diff(previous.time)
 					var norm = current.diff(previous.time)
 					var progress = norm.milliseconds / range.milliseconds
-
-					range = next.value - previous.value
 					
 					// set light value by progress between previous and current
 					// linear interpolation between [previous.value, next.value]
-					var v = Math.round(progress * range)
+					// TODO: support easing functions
+					var t = progress
+					v = Interpolation.Linear([previous.value, next.value], t)
+					v = Math.round(v)
 					console.log(`Value: ${v}`)
 					light.value = v
 				}).bind(null, light, t.values)
