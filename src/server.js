@@ -74,6 +74,59 @@ io.on('connection', (socket) => {
 		io.emit('lightChanged', light)
 	})
 
+	socket.on('setState', (data) => {
+		/* data:
+			{
+				// use state: "State name" to load a state by name
+				state: {
+					name: "State name" // human readable state name
+					actions: [
+						...
+						// see actions for data def
+					]
+				}
+				(replace: false,) // replace current state?
+				(save: false,) // save the state?
+				(overwrite: false,) // overwrite existing saved state?
+			}
+		*/
+
+		// TODO: implement saving states
+		if (data.save) console.log("(Warn) Save not implemented")
+
+		// create state object
+		let source = data.state
+		if (typeof data.state === "string" || !data.state.actions) { // load by name
+			// TODO: implement loading states
+			console.log("(Warn) Load not implemented")
+		}
+
+		const state = new State(source, lights)
+
+		// enter state
+		enterState(state, data.replace || false)
+	})
+
+	socket.on('leaveCurrentState', (data) => {
+		leaveCurrentState()
+	})
+
+	socket.on('getState', (data, callback) => {
+		/* data:
+		{
+			(name: "State name") // load state by name and return it
+		}
+		*/
+		console.log("getState")
+
+		if (data && data.name) {
+			// TODO: implement loading states
+			console.log("(Warn) Load not implemented")
+		} else { // respond with current state
+			callback(getCurrentState())
+		}
+	})
+
 	// client wants to get the current value of a light
 	socket.on('getLight', (data, callback) => {
 		console.log(`getLight - ${data.id}`)
@@ -117,3 +170,5 @@ function leaveCurrentState () {
 		states[states.length - 1].enter()
 	}
 }
+
+function getCurrentState () { return states[states.length - 1] }

@@ -7,7 +7,7 @@ export class Action {
 	constructor(source, lights) {
 		Object.assign(this, source)
 		this.lights = lights;
-		this.originalValues = []
+		this._originalValues = []
 	}
 
 	/* Applies the action to its lights */
@@ -17,6 +17,17 @@ export class Action {
 	/* Undoes anything caused by this action and disables the action */
 	/* e.x. the time-based action would stop its polling function */
 	// undo () { }
+
+	toJSON () {
+		// auto exclude props starting with _ (private)
+		var copy = {}
+		for (var prop in this) {
+			if (!String(prop).startsWith("_")) {
+				copy[prop] = this[prop]
+			}
+		}
+		return copy
+	}
 
 	static from(type, source, lights) {
 		if (types[type]) {
@@ -35,7 +46,7 @@ export class SimpleAction extends Action {
 		this.values.forEach(l => {
 			var light = this.lights[l.id] // TODO: reference lights by name?
 			if (light) {
-				this.originalValues[l.id] = light.value
+				this._originalValues[l.id] = light.value
 				light.value = l.value
 			}
 		})
@@ -45,7 +56,7 @@ export class SimpleAction extends Action {
 		this.values.forEach(l => {
 			var light = this.lights[l.id]
 			if (light) {
-				light.value = this.originalValues[l.id]
+				light.value = this._originalValues[l.id]
 			}
 		})
 	}
@@ -54,18 +65,18 @@ export class SimpleAction extends Action {
 export class TimeAction extends Action {
 	constructor(source, lights) {
 		super(source, lights)
-		this.animators = {}
+		this._animators = {}
 	}
 
 	apply() {
 		this.timings.forEach(t => {
 			var light = this.lights[t.id]
 			if (light) {
-				this.originalValues[t.id] = light.value
+				this._originalValues[t.id] = light.value
 
 				// create animator
-				this.animators[t.id] = new TimeAnimatedLight(light, t.values)
-				this.animators[t.id].start()
+				this._animators[t.id] = new TimeAnimatedLight(light, t.values)
+				this._animators[t.id].start()
 			}
 		})
 	}
@@ -74,8 +85,8 @@ export class TimeAction extends Action {
 		this.timings.forEach(t => {
 			var light = this.lights[t.id]
 			if (light) {
-				this.animators[t.id].stop()
-				light.value = this.originalValues[t.id]
+				this._animators[t.id].stop()
+				light.value = this._originalValues[t.id]
 			}
 		})
 	}
