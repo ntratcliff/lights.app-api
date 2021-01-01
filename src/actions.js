@@ -111,9 +111,15 @@ class TimeAnimatedLight {
 	}
 
 	update () {
+		// DEBUG
 		console.log(`Updating light ${this.light.name} from time action`)
+		console.log('Values:')
+		console.log(this.values)
+		
 		// current time
 		var current = DateTime.local()
+
+		console.log(`Current time is ${current.toString()}`) // DEBUG
 
 		// get closest time before current time
 		var previous = null
@@ -151,10 +157,20 @@ class TimeAnimatedLight {
 			next.time = next.time.plus({ day: 1 })
 		}
 
+		// DEBUG
+		console.log(`Nearest previous time: ${previous.time.toString()}`)
+		console.log(`Nearest next time: ${next.time.toString()}`)
+
 		// calculate current time relative to prev/next
 		var range = next.time.diff(previous.time).milliseconds
 		var norm = current.diff(previous.time).milliseconds
 		var progress = norm / range
+
+		console.log(
+			`${(progress*100).toFixed(2)}% between` + 
+			` ${previous.time.toString()} and` + 
+			` ${next.time.toString()}`
+		) // DEBUG
 
 		// set light value by progress between previous and current
 		// linear interpolation between [previous.value, next.value]
@@ -162,18 +178,28 @@ class TimeAnimatedLight {
 		var t = progress
 		v = Interpolation.Linear([previous.value, next.value], t)
 		v = Math.round(v)
-		console.log(`Value: ${v}`)
+
+		console.log(
+			`${(progress*100).toFixed(2)}%` + 
+			` [${previous.value} ---` +
+			` ${v} ---` + 
+			` ${next.value}]`
+		) // DEBUG
+
 		this.light.value = v
 
 		// calculate next update time from current and next timings
 		var vd = next.value - previous.value
 		var rate = 0
-		if(vd !== 0) {
+		if (vd !== 0) {
 			// rate = |(v2 - v1) / (t2 - t1)|
 			rate = Math.floor(1 / Math.abs(vd / range))
+			console.log(`${rate}ms = 1ms / |${vd}u / ${range}ms|`)
 		} else { // no value change until next time 
 			rate = range - norm // range - norm = ms to next time
+			console.log(`${rate}ms = ${range}ms - ${norm}ms (vd = ${vd})`)
 		}
+
 		console.log(`Next update in ${rate}`)
 		this.handle = setTimeout(this.update.bind(this), rate)
 	}
