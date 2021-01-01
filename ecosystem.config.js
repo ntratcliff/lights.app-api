@@ -5,6 +5,7 @@ module.exports = {
 			script: './dist/server.js',
 			watch: true,
 			autorestart: true,
+			time: true,
 			restart_delay: 1000,
 			env: {
 				NODE_ENV: 'development',
