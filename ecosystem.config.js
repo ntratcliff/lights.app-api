@@ -9,11 +9,11 @@ module.exports = {
 			restart_delay: 1000,
 			env: {
 				NODE_ENV: 'development',
-				PIGPIO: true
+				PIGPIO: true,
+				DATA_PATH: '/var/lib/lights.app/api/'
 			},
 			env_production: {
 				NODE_ENV: 'production',
-				PIGPIO: true
 			}
 		}
 	]

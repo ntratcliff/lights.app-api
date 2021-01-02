@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import express from 'express'
 import SocketIO from 'socket.io'
 import dotenv from 'dotenv'
@@ -91,20 +92,25 @@ io.on('connection', (socket) => {
 			}
 		*/
 
-		// TODO: implement saving states
-		if (data.save) console.log("(Warn) Save not implemented")
-
 		// create state object
-		let source = data.state
-		if (typeof data.state === "string" || !data.state.actions) { // load by name
-			// TODO: implement loading states
-			console.log("(Warn) Load not implemented")
+		if (typeof data.state === "string") { // mutate for load in next step
+			data.state = { name: data.state }	
+		}
+		
+		const state = new State(data.state, lights)
+
+		if (data.state.name && !data.state.actions) { // load then enter
+			State.loadFromFs(state, lights, (err, state) => {
+				if (err) throw err
+				enterState(state, data.replace || false)
+			})
+		}
+		else {
+			// enter state
+			enterState(state, data.replace || false)
 		}
 
-		const state = new State(source, lights)
-
-		// enter state
-		enterState(state, data.replace || false)
+		if (data.save) State.writeToFs(state, data.overwrite || false)
 	})
 
 	socket.on('leaveCurrentState', (data) => {
@@ -125,6 +131,20 @@ io.on('connection', (socket) => {
 		} else { // respond with current state
 			callback(getCurrentState())
 		}
+	})
+
+	// returns the saved states
+	socket.on('getStates', (data, callback) => {
+		/* data:
+		{
+			(full: false) // return full state information, not just names
+		}
+		*/
+
+		console.log('getStates')
+		State.fsList()
+			.then(callback)
+			.catch((error) => { throw error })
 	})
 
 	// client wants to get the current value of a light
@@ -158,6 +178,8 @@ function enterState (state, replaceCurrent = false) {
 
 	states.push(state)
 	states[states.length - 1].enter() // enter new state
+
+	if (io) io.sockets.emit('stateChanged', state)
 }
 
 function leaveCurrentState () {
