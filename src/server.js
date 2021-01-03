@@ -8,6 +8,7 @@ import Light from './light'
 import State from './state'
 
 import config from '../rooms.config.js'
+import path from 'path'
 
 dotenv.config() // init dotenv
 
@@ -37,11 +38,21 @@ config.rooms.forEach(data => {
 /** @var {State[]} states Stack of states. Top of stack is active state. */
 var states = []
 
-// push default state
-const defaultState = require('../time.state.json')
-// const defaultState = require('./debug').timeState
-var initState = new State(defaultState, lights)
-enterState(initState)
+// load and push default state
+var defaultPath = path.join(process.env.DATA_PATH, 'default-state.json')
+State.loadFromFs(defaultPath, lights)
+	.then(state => {
+		enterState(state)
+	})
+	.catch(err => {
+		if (err.code === 'ENOENT') // no file
+		{
+			console.log(
+				`WARN: Could not find a default state at path ${defaultPath}`
+			)
+		}
+		else throw err
+	})
 
 // init web server
 var app = express()
@@ -97,14 +108,13 @@ io.on('connection', (socket) => {
 		const state = new State(data.state, lights)
 
 		if (data.state.name && !data.state.actions) { // load then enter
-			State.loadFromFs(state, lights, (err, state) => {
-				if (err) {
-					if(callback) callback(err)
-					throw err
-				} else {
-					enterState(state, data.replace || false)
-					if (!data.save && callback) callback()
-				}
+			State.loadFromFs(state, lights).then((state) => {
+				enterState(state, data.replace || false)
+				if (!data.save && callback) callback()
+			})
+			.catch((err) => {
+				callback(err)	
+				throw err
 			})
 		}
 		else {
@@ -113,7 +123,11 @@ io.on('connection', (socket) => {
 			if (!data.save && callback) callback()
 		}
 
-		if (data.save) State.writeToFs(state, data.overwrite || false, callback)
+		if (data.save) {
+			State.writeToFs(state, data.overwrite || false)
+				.then(callback)
+				.catch(callback)
+		}
 	})
 
 	socket.on('leaveCurrentState', (data) => {
@@ -179,6 +193,29 @@ io.on('connection', (socket) => {
 			})
 			.catch((err) => {
 				console.log(`failed to delete ${data.name}`)
+				console.log(err)
+				callback(err)
+			})
+	})
+
+	socket.on('setDefault', (data, callback) => {
+		/* data:
+		{
+			name: "State name"
+		}
+		*/
+		console.log('setDefaultState')
+		// load state 
+		var state = new State(data, lights)
+		State.loadFromFs(state, lights)
+			.then(state => {
+				return State.setDefault(state)
+			})
+			.then(() => {
+				console.log(`successfully set ${state.name} as default state`)
+				callback()
+			})
+			.catch(err => {
 				console.log(err)
 				callback(err)
 			})

@@ -6,10 +6,11 @@ import fsutil from './fsutil'
 
 export default class State {
 	constructor (source, lights) {
-		console.log("state constructor called")
 		this.actions = []
 		this.name = ""
-		State._assign(this, source, lights)
+		if (source) {
+			State._assign(this, source, lights)
+		}
 	}
 
 	enter () {
@@ -28,12 +29,12 @@ export default class State {
 	 * @param {boolean} [overwrite=false] Whether or not to overwrite the file if it already exists
 	 * @param {function} callback Callback passed to fs.writeFile
 	 */
-	static writeToFs (state, overwrite = false, callback) {	
+	static async writeToFs (state, overwrite = false) {	
 		var path = this._getFsPath(state)
 		console.log(`Writing profile to ${path}`)
 
 		// make sure the path exists before continuing
-		fsutil.ensurePathExists(path.substring(0, path.lastIndexOf('/')))
+		return fsutil.ensurePathExists(path.substring(0, path.lastIndexOf('/')))
 			.then(() => {
 				var data = JSON.stringify(state)
 
@@ -44,20 +45,11 @@ export default class State {
 				// set flag to prevent overwrite path if it exists
 				if (!overwrite) { op.flag = op.flag.concat('x') }
 
-				fs.promises.writeFile(path, data, op)
-					.then(() => {
-						console.log(`Successfully saved profile to ${path}`)
-						callback()
-					})
-					.catch((err) => {
-						if (callback) {
-							callback(err)
-						} else {
-							throw err
-						}
-					})
+				return fs.promises.writeFile(path, data, op)
 			})
-			.catch(err => { throw err })
+			.then(() => {
+				console.log(`Successfully saved profile to ${path}`)
+			})
 	}
 
 	/**
@@ -65,15 +57,19 @@ export default class State {
 	 * @param {State} state The state object to load into
 	 * @param {Function} callback Callback on state loaded or fs error
 	 */
-	static loadFromFs (state, lights, callback) {
-		var path = this._getFsPath(state)
+	static async loadFromFs (state, lights) {
+		var path
+		if (typeof state === 'string') {
+			path = state
+			state = new State()
+		} else {
+			path = this._getFsPath(state)
+		}
 
 		console.log(`Loading profile from path ${path}`)
 
-		fs.readFile(path, (err, data) => {
-			if (err) {
-				callback(err)
-			} else {
+		return fs.promises.readFile(path)
+			.then(data => {
 				var source = JSON.parse(data)
 
 				if (lights) {
@@ -83,9 +79,8 @@ export default class State {
 					Object.assign(state, source) // raw assign from source
 				}
 
-				callback(err, state)
-			}
-		})
+				return state
+			})
 	}
 
 	/** Returns a list of all states saved on the filesystem */
@@ -112,6 +107,14 @@ export default class State {
 	 */
 	static async fsDelete (name) {
 		return fs.promises.unlink(this._getFsPath({name: name}))
+	}
+
+	static async setDefault (state) {
+		// ensure state is saved 
+		var defaultPath = path.join(process.env.DATA_PATH, 'default-state.json')
+		await this.writeToFs(state, true)
+		await fs.promises.unlink(defaultPath) // remove link if already there
+		return fs.promises.symlink(this._getFsPath(state), defaultPath)
 	}
 
 	static _getProfilesPath() {
