@@ -241,6 +241,8 @@ function enterState (state, replaceCurrent = false) {
 }
 
 function leaveCurrentState () {
+	if(states.length == 1) return // don't allow base state to be left
+
 	var state = states.pop()
 	if (state) {
 		state.leave()
