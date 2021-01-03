@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
 		io.emit('lightChanged', light)
 	})
 
-	socket.on('setState', (data) => {
+	socket.on('setState', (data, callback) => {
 		/* data:
 			{
 				// use state: "State name" to load a state by name
@@ -101,16 +101,22 @@ io.on('connection', (socket) => {
 
 		if (data.state.name && !data.state.actions) { // load then enter
 			State.loadFromFs(state, lights, (err, state) => {
-				if (err) throw err
-				enterState(state, data.replace || false)
+				if (err) {
+					if(callback) callback(err)
+					throw err
+				} else {
+					enterState(state, data.replace || false)
+					if (!data.save && callback) callback()
+				}
 			})
 		}
 		else {
 			// enter state
 			enterState(state, data.replace || false)
+			if (!data.save && callback) callback()
 		}
 
-		if (data.save) State.writeToFs(state, data.overwrite || false)
+		if (data.save) State.writeToFs(state, data.overwrite || false, callback)
 	})
 
 	socket.on('leaveCurrentState', (data) => {
@@ -126,10 +132,9 @@ io.on('connection', (socket) => {
 		console.log("getState")
 
 		if (data && data.name) {
-			// TODO: implement loading states
-			console.log("(Warn) Load not implemented")
+			State.loadFromFs(data, null, (err, state) => callback(err, state))
 		} else { // respond with current state
-			callback(getCurrentState())
+			callback(null, getCurrentState())
 		}
 	})
 

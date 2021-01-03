@@ -42,11 +42,12 @@ export default class State {
 				}
 
 				// set flag to prevent overwrite path if it exists
-				if (!overwrite) { op.flag.concat('x') }
+				if (!overwrite) { op.flag = op.flag.concat('x') }
 
 				fs.promises.writeFile(path, data, op)
 					.then(() => {
 						console.log(`Successfully saved profile to ${path}`)
+						callback()
 					})
 					.catch((err) => {
 						if (callback) {
@@ -74,7 +75,14 @@ export default class State {
 				callback(err)
 			} else {
 				var source = JSON.parse(data)
-				this._assign(state, source, lights)
+
+				if (lights) {
+					this._assign(state, source, lights) // create full state object from source
+				}
+				else {
+					Object.assign(state, source) // raw assign from source
+				}
+
 				callback(err, state)
 			}
 		})
@@ -118,5 +126,13 @@ export default class State {
 			console.log(action) // DEBUG
 			return action;
 		})
+	}
+
+	/**
+	 * Delete a state on the filesystem
+	 * @param {String} name The name of the state to delete
+	 */
+	static async fsDelete (name) {
+		
 	}
 }
