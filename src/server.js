@@ -220,6 +220,10 @@ io.on('connection', (socket) => {
 				callback(err)
 			})
 	})
+
+	socket.on('getStateStack', (data, callback) => {
+		callback(states)
+	})
 })
 
 function enterState (state, replaceCurrent = false) {
@@ -237,7 +241,7 @@ function enterState (state, replaceCurrent = false) {
 	states.push(state)
 	states[states.length - 1].enter() // enter new state
 
-	if (io) io.sockets.emit('stateChanged', state)
+	if (io) io.sockets.emit('stateChanged', states)
 }
 
 function leaveCurrentState () {
@@ -255,7 +259,7 @@ function leaveCurrentState () {
 		state = null
 	}
 
-	if (io) io.sockets.emit('stateChanged', state)
+	if (io) io.sockets.emit('stateChanged', states)
 }
 
 function getCurrentState () { return states[states.length - 1] }
