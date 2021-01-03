@@ -100,7 +100,7 @@ module.exports = shipit => {
 	shipit.blTask('configure-data-path', async () => {
 		const dir = ecosystemConfig.apps[0].env.DATA_PATH
 		await shipit.remote(
-			`sudo mkdir -p ${dir} && sudo chown $(whoami) ${dir}`
+			`sudo mkdir -p ${dir} && sudo chown -R $(whoami) ${dir}`
 		)
 	})
 }
