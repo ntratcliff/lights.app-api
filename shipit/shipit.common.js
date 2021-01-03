@@ -1,5 +1,7 @@
 // source: https://www.digitalocean.com/community/tutorials/how-to-automate-your-node-js-production-deployments-with-shipit-on-centos-7#step-1-%E2%80%94-setting-up-the-remote-repository
 
+const ecosystemConfig = require('../ecosystem.config')
+
 module.exports = shipit => {
 	require('shipit-deploy')(shipit)
 	require('shipit-shared')(shipit)
@@ -48,6 +50,7 @@ module.exports = shipit => {
 	})
 
 	shipit.on('published', () => {
+		shipit.start('configure-data-path')
 		shipit.start('pm2-server')
 	})
 
@@ -86,5 +89,11 @@ module.exports = shipit => {
 			`sudo pm2 start ecosystem.config.js --env production --watch true && sudo pm2 save`, 
 			{ cwd: shipit.releasePath }
   		)
+	})
+
+	shipit.blTask('configure-data-path', async () => {
+		await shipit.remote(
+			`sudo mkdir -p ${ecosystemConfig.apps[0].env.DATA_PATH}`
+		)
 	})
 }
