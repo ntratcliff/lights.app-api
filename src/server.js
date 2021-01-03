@@ -135,7 +135,10 @@ io.on('connection', (socket) => {
 
 		if (data.save) {
 			State.writeToFs(state, data.overwrite || false)
-				.then(callback)
+				.then(() => {
+					io.emit('saveStatesChanged')
+					callback()
+				})
 				.catch(callback)
 		}
 	})
@@ -199,6 +202,7 @@ io.on('connection', (socket) => {
 		State.fsDelete(data.name)
 			.then(() => {
 				console.log(`successfully deleted ${data.name}!`)
+				io.emit('saveStatesChanged')
 				callback()
 			})
 			.catch((err) => {
@@ -236,6 +240,7 @@ io.on('connection', (socket) => {
 				}
 
 				console.log(`successfully set ${state.name} as default state`)
+				io.emit('saveStatesChanged')
 				callback()
 			})
 			.catch(err => {
