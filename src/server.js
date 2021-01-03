@@ -222,6 +222,19 @@ io.on('connection', (socket) => {
 				return State.setDefault(state)
 			})
 			.then(() => {
+				// replace state in states stack
+				if (states.length <= 1) { // enter default or replace current (base)
+					enterState(state, true)
+				} else { // replace default at base of stack
+					states[0] = state
+					io.sockets.emit('stateChanged', states)
+					if (states.length == 2 
+						&& states[0].name === states[1].name
+					) { // collapse stack into default
+						leaveCurrentState()
+					}
+				}
+
 				console.log(`successfully set ${state.name} as default state`)
 				callback()
 			})
