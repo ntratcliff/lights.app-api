@@ -54,7 +54,7 @@ var server = app.listen(8081, function() {
 })
 
 // init socket.io
-var io = SocketIO(server);
+export var io = SocketIO(server);
 
 io.on('connection', (socket) => {
 	console.log(`connected to ${socket.id}`)
@@ -70,9 +70,6 @@ io.on('connection', (socket) => {
 		var light = lights[data.id]
 
 		light.value = data.value
-
-		// notify all sockets that a light changed
-		io.emit('lightChanged', light)
 	})
 
 	socket.on('setState', (data, callback) => {
@@ -167,6 +164,18 @@ io.on('connection', (socket) => {
 
 		callback(rooms)
 	})
+
+	socket.on('deleteState', (data, callback) => {
+		/* data:
+		{
+			name: "State name"
+		}
+		*/
+		console.log('deleteState')
+		State.fsDelete(data.name)
+			.then(callback)
+			.catch(callback)
+	})
 })
 
 function enterState (state, replaceCurrent = false) {
@@ -194,8 +203,13 @@ function leaveCurrentState () {
 	}
 
 	if (states.length > 0) {
+		state = states[states.length - 1]
 		states[states.length - 1].enter()
+	} else {
+		state = null
 	}
+
+	if (io) io.sockets.emit('stateChanged', state)
 }
 
 function getCurrentState () { return states[states.length - 1] }

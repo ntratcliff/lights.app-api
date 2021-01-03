@@ -1,4 +1,5 @@
 import { Gpio } from './pigpio-interface.js'
+import { io } from './server'
 
 const DEFAULT_LERP_SPEED = 100
 
@@ -44,6 +45,11 @@ export default class Light {
 				this.lerpValue.bind(this), 
 				1000/this.lerpSpeed
 			)
+		}
+
+		if (this.gpioValue !== this.targetValue && io) {
+			// notify all sockets that a light changed
+			io.emit('lightChanged', this)
 		}
 	}
 

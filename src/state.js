@@ -106,6 +106,14 @@ export default class State {
 		return list
 	}
 
+	/**
+	 * Delete a state on the filesystem
+	 * @param {String} name The name of the state to delete
+	 */
+	static async fsDelete (name) {
+		await fs.promises.rm(this._getFsPath({name: name}))
+	}
+
 	static _getProfilesPath() {
 		return path.join(process.env.DATA_PATH, 'profiles')
 	}
@@ -126,13 +134,5 @@ export default class State {
 			console.log(action) // DEBUG
 			return action;
 		})
-	}
-
-	/**
-	 * Delete a state on the filesystem
-	 * @param {String} name The name of the state to delete
-	 */
-	static async fsDelete (name) {
-		
 	}
 }
