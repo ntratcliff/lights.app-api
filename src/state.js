@@ -8,6 +8,7 @@ export default class State {
 	constructor (source, lights) {
 		this.actions = []
 		this.name = ""
+		this.default = false
 		if (source) {
 			State._assign(this, source, lights)
 		}
@@ -112,8 +113,20 @@ export default class State {
 	static async setDefault (state) {
 		// ensure state is saved 
 		var defaultPath = path.join(process.env.DATA_PATH, 'default-state.json')
+		
+		try { // remove existing if any
+			var current = await this.loadFromFs(defaultPath)
+			current.default = false
+			this.writeToFs(current, true)
+			await fs.promises.unlink(defaultPath)
+		} catch (err) {
+			if (err.code !== 'ENOENT') {
+				throw err
+			}
+		}
+
+		state.default = true
 		await this.writeToFs(state, true)
-		await fs.promises.unlink(defaultPath) // remove link if already there
 		return fs.promises.symlink(this._getFsPath(state), defaultPath)
 	}
 

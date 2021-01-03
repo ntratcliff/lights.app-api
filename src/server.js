@@ -100,9 +100,20 @@ io.on('connection', (socket) => {
 			}
 		*/
 
+		if (!callback) callback = () => {}
+
 		// create state object
 		if (typeof data.state === "string") { // mutate for load in next step
 			data.state = { name: data.state }	
+		}
+
+		var current = getCurrentState()
+		// don't push state if it is the same as the current state
+		if (current.name === data.state.name && !data.replace) {
+			callback({
+				msg: `Current state is already ${data.state.name}`
+			})
+			return
 		}
 		
 		const state = new State(data.state, lights)
@@ -110,17 +121,16 @@ io.on('connection', (socket) => {
 		if (data.state.name && !data.state.actions) { // load then enter
 			State.loadFromFs(state, lights).then((state) => {
 				enterState(state, data.replace || false)
-				if (!data.save && callback) callback()
+				if (!data.save) callback()
 			})
 			.catch((err) => {
 				callback(err)	
-				throw err
 			})
 		}
 		else {
 			// enter state
 			enterState(state, data.replace || false)
-			if (!data.save && callback) callback()
+			if (!data.save) callback()
 		}
 
 		if (data.save) {
