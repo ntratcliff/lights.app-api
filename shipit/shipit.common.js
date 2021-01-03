@@ -35,10 +35,16 @@ module.exports = shipit => {
 			},
 		},
 		development: {
-			servers: 'lights@blackberry.local'
+			servers: [{
+				host: 'blackberry.local',
+				user: 'lights'
+			}]
 		},
 		production: {
-			servers: 'lights@raspberry.local'
+			servers: [{
+				host: 'lights.local',
+				user: 'lights'
+			}]
 		}
 	})
 
@@ -92,8 +98,9 @@ module.exports = shipit => {
 	})
 
 	shipit.blTask('configure-data-path', async () => {
+		const dir = ecosystemConfig.apps[0].env.DATA_PATH
 		await shipit.remote(
-			`sudo mkdir -p ${ecosystemConfig.apps[0].env.DATA_PATH}`
+			`sudo mkdir -p ${dir} && sudo chown $(whoami) ${dir}`
 		)
 	})
 }
