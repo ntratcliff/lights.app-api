@@ -173,8 +173,15 @@ io.on('connection', (socket) => {
 		*/
 		console.log('deleteState')
 		State.fsDelete(data.name)
-			.then(callback)
-			.catch(callback)
+			.then(() => {
+				console.log(`successfully deleted ${data.name}!`)
+				callback()
+			})
+			.catch((err) => {
+				console.log(`failed to delete ${data.name}`)
+				console.log(err)
+				callback(err)
+			})
 	})
 })
 

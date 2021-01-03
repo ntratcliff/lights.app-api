@@ -111,7 +111,7 @@ export default class State {
 	 * @param {String} name The name of the state to delete
 	 */
 	static async fsDelete (name) {
-		await fs.promises.rm(this._getFsPath({name: name}))
+		return fs.promises.rm(this._getFsPath({name: name}))
 	}
 
 	static _getProfilesPath() {
