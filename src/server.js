@@ -9,6 +9,7 @@ import State from './state'
 
 import config from '../rooms.config.js'
 import path from 'path'
+import state from '../dist/state'
 
 dotenv.config() // init dotenv
 
@@ -39,20 +40,7 @@ config.rooms.forEach(data => {
 var states = []
 
 // load and push default state
-var defaultPath = path.join(process.env.DATA_PATH, 'default-state.json')
-State.loadFromFs(defaultPath, lights)
-	.then(state => {
-		enterState(state)
-	})
-	.catch(err => {
-		if (err.code === 'ENOENT') // no file
-		{
-			console.log(
-				`WARN: Could not find a default state at path ${defaultPath}`
-			)
-		}
-		else throw err
-	})
+loadDefaultState()
 
 // init web server
 var app = express()
@@ -260,7 +248,34 @@ io.on('connection', (socket) => {
 	socket.on('getStateStack', (data, callback) => {
 		callback(states)
 	})
+
+	socket.on('resetStateStack', (callback) => {
+		if (!callback) callback = () => {}
+
+		while (states.length > 1) { // leave all but the base
+			leaveCurrentState()
+		}
+
+		loadDefaultState() // replace base with default
+	})
 })
+
+function loadDefaultState (replace = true) {
+	var defaultPath = path.join(process.env.DATA_PATH, 'default-state.json')
+	State.loadFromFs(defaultPath, lights)
+		.then(state => {
+			enterState(state, replace)
+		})
+		.catch(err => {
+			if (err.code === 'ENOENT') // no file
+			{
+				console.log(
+					`WARN: Could not find a default state at path ${defaultPath}`
+				)
+			}
+			else throw err
+		})
+}
 
 function enterState (state, replaceCurrent = false) {
 	console.log("entering state")
