@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
 
 		var current = getCurrentState()
 		// don't push state if it is the same as the current state
-		if (current.name === data.state.name && !data.replace) {
+		if (current && current.name === data.state.name && !data.replace) {
 			callback({
 				msg: `Current state is already ${data.state.name}`
 			})

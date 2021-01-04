@@ -107,6 +107,20 @@ export default class State {
 	 * @param {String} name The name of the state to delete
 	 */
 	static async fsDelete (name) {
+		// load state to check if default
+		var state = await this.loadFromFs({ name: name })
+		if (state.default) {
+			var defaultPath = path.join(process.env.DATA_PATH, 'default-state.json')
+			try {
+				await fs.promises.unlink(defaultPath)
+			} catch (err) {
+				if (err.code !== 'ENOENT') {
+					throw err
+				}
+			}
+		}
+
+		// remove state
 		return fs.promises.unlink(this._getFsPath({name: name}))
 	}
 
@@ -121,7 +135,7 @@ export default class State {
 			await fs.promises.unlink(defaultPath)
 		} catch (err) {
 			if (err.code !== 'ENOENT') {
-				throw err
+				return err
 			}
 		}
 
