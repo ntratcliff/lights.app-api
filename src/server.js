@@ -158,10 +158,13 @@ io.on('connection', (socket) => {
 			(name: "State name") // load state by name and return it
 		}
 		*/
+		if (!callback) callback = () => {}
 		console.log("getState")
 
 		if (data && data.name) {
-			State.loadFromFs(data, null, (err, state) => callback(err, state))
+			State.loadFromFs(data, null)
+				.then(state => callback(null, state))
+				.catch(err => callback(err))
 		} else { // respond with current state
 			callback(null, getCurrentState())
 		}
