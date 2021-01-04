@@ -118,6 +118,11 @@ io.on('connection', (socket) => {
 		
 		const state = new State(data.state, lights)
 
+		// don't allow replace for default
+		if (data.replace && states.length === 1 && states[0].default) {
+			data.replace = false // TODO: let user know we ignored this
+		}
+
 		if (data.state.name && !data.state.actions) { // load then enter
 			State.loadFromFs(state, lights).then((state) => {
 				enterState(state, data.replace || false)
