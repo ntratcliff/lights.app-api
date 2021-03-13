@@ -11,7 +11,6 @@ import WebPin from './web-pin'
 import config from '../rooms.config.js'
 import path from 'path'
 import state from '../dist/state'
-import { exit } from 'process'
 
 dotenv.config() // init dotenv
 
