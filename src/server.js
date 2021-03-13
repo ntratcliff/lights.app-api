@@ -11,6 +11,7 @@ import WebPin from './web-pin'
 import config from '../rooms.config.js'
 import path from 'path'
 import state from '../dist/state'
+import { debug } from 'console'
 
 dotenv.config() // init dotenv
 
@@ -22,9 +23,10 @@ process.on('SIGINT', () => {
 // test webpin
 var good = new WebPin('8c:aa:b5:63:2d:c0', 0)
 good.connect()
-
-var bad = new WebPin('64:4b:f0:24:d8:af', 0)
-bad.connect()
+	.then(() => good.pwmWrite(0)) // turn off
+	.then(v => console.log(`Value set to ${v}`))
+	.then(() => good.pwmWrite(1024)) // turn on
+	.then(v => console.log(`Value set to ${v}`))
 
 // load rooms and lights from config
 var rooms = []
