@@ -29,7 +29,6 @@ export default class WebPin {
 
 		return WebPin.find(this.mac)
 			.then(d => {
-
 				// get device info
 				return new Promise((resolve, reject) => {
 					var req = http.request({
@@ -70,12 +69,12 @@ export default class WebPin {
 				}
 			})
 			.then(d => {
-				console.log('Successfully connected to web pin!')
+				console.log(`Successfully connected to web pin ${this.mac}!`)
 				console.log(d)
 				this.device = d
 			})
 			.catch(error => {
-				console.log('Failed to connect to web pin')
+				console.log(`Failed to connect to web pin ${this.mac}`)
 				console.log(error)
 			})
 

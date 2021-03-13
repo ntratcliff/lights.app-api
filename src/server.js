@@ -24,7 +24,7 @@ process.on('SIGINT', () => {
 var good = new WebPin('8c:aa:b5:63:2d:c0', 0)
 good.connect()
 
-var bad = new WebPin('badmac', 0)
+var bad = new WebPin('64:4b:f0:24:d8:af', 0)
 bad.connect()
 
 // load rooms and lights from config
