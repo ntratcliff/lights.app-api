@@ -21,22 +21,11 @@ process.on('SIGINT', () => {
 })
 
 // test webpin
-WebPin.create('8c:aa:b5:63:2d:c0', 0).then(pin => {
-	console.log('Successfully created web pin!')
-	console.log(pin)
-}).catch(error => {
-	console.log('Failed to create web pin')
-	console.log(error)
-})
+var good = new WebPin('8c:aa:b5:63:2d:c0', 0)
+good.connect()
 
-// test webpin
-WebPin.create('badmac', 0).then(pin => {
-	console.log('Successfully created web pin!')
-	console.log(pin)
-}).catch(error => {
-	console.log('Failed to create web pin')
-	console.log(error)
-})
+var bad = new WebPin('badmac', 0)
+bad.connect()
 
 // load rooms and lights from config
 var rooms = []
