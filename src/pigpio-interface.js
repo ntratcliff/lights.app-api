@@ -12,15 +12,19 @@ class EmulatedGpio
 		Object.assign(this, options)
 		this.dutyCycle = 0
 
-		console.log(
-			`(EmulatedGpio) gpio started on pin ${this.gpio}` + 
-			` with mode ${this.mode}`
-		)
+		if(process.env.NODE_ENV === 'development') {
+			console.log(
+				`(EmulatedGpio) gpio started on pin ${this.gpio}` + 
+				` with mode ${this.mode}`
+			)
+		}
 	}
 
 	pwmWrite (dutyCycle) {
 		this.dutyCycle = dutyCycle
-		console.log(`(EmulatedGpio)[pwmWrite] dutyCycle: ${dutyCycle}`)
+		if(process.env.NODE_ENV === 'development') {
+			console.log(`(EmulatedGpio)[pwmWrite] dutyCycle: ${dutyCycle}`)
+		}
 	}	
 
 	getPwmDutyCycle () { return this.dutyCycle }

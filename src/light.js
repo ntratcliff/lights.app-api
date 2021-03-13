@@ -76,15 +76,19 @@ export default class Light {
 	 */
 	lerpValue () {
 		if (this.gpioValue < this.value) {
-			console.log(`${this.name} going up!`)
+			if(process.env.NODE_ENV === 'development') 
+				console.log(`${this.name} going up!`)
+		
 			this.gpioValue++;
 		}
 		else if(this.gpioValue > this.value) {
-			console.log(`${this.name} going down!`)
+			if(process.env.NODE_ENV === 'development') 
+				console.log(`${this.name} going down!`)
 			this.gpioValue--;
 		}
 		else if(this.gpioValue === this.value) {
-			console.log(`${this.name} done interpolating!`)
+			if(process.env.NODE_ENV === 'development') 
+				console.log(`${this.name} done interpolating!`)
 			clearInterval(this.lerpInterval)
 			this.lerpInterval = null
 		}

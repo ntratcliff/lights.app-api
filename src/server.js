@@ -6,16 +6,36 @@ import dotenv from 'dotenv'
 import Room from './room'
 import Light from './light'
 import State from './state'
+import WebPin from './web-pin'
 
 import config from '../rooms.config.js'
 import path from 'path'
 import state from '../dist/state'
+import { exit } from 'process'
 
 dotenv.config() // init dotenv
 
 process.on('SIGINT', () => {
 	console.log("Interrupt signal detected. Server shutting down...")
 	process.exit()
+})
+
+// test webpin
+WebPin.create('8c:aa:b5:63:2d:c0', 0).then(pin => {
+	console.log('Successfully created web pin!')
+	console.log(pin)
+}).catch(error => {
+	console.log('Failed to create web pin')
+	console.log(error)
+})
+
+// test webpin
+WebPin.create('badmac', 0).then(pin => {
+	console.log('Successfully created web pin!')
+	console.log(pin)
+}).catch(error => {
+	console.log('Failed to create web pin')
+	console.log(error)
 })
 
 // load rooms and lights from config
